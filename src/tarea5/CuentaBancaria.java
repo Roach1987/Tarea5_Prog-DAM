@@ -301,13 +301,19 @@ public class CuentaBancaria {
      */
     private void pintarOpcionesMenu(CuentaBancaria cuentaBancaria){
         System.out.println("********************************************************");
-        System.out.println("**** Bienvenido " + cuentaBancaria.getTitular() + " ********************");
-        
-        
-        
-        
-        
-        
+        System.out.println("***** Bienvenido " + cuentaBancaria.getTitular() + " *****");
+        System.out.println("***** Dispone de las siguientes opciones: *****");
+        System.out.println("***** Dispone de las siguientes opciones: *****");
+        System.out.println("***** 1) Ver el número de cuenta completo (CCC - Código Cuenta Cliente). *****");
+        System.out.println("***** 2) Ver el titular de la cuenta. *****");
+        System.out.println("***** 3) Ver el código de la entidad. *****");
+        System.out.println("***** 4) Ver el titular de la cuenta. *****");
+        System.out.println("***** 5) Ver el titular de la cuenta. *****");
+        System.out.println("***** 6) Ver el titular de la cuenta. *****");
+        System.out.println("***** 7) Ver el titular de la cuenta. *****");
+        System.out.println("***** 8) Ver el titular de la cuenta. *****");
+        System.out.println("***** 9) Ver el titular de la cuenta. *****");
+        System.out.println("**** 10) Ver el titular de la cuenta. *****");
         System.out.println("********************************************************");
     }
 // ***********************************************************************************
