@@ -127,14 +127,16 @@ public class CuentaBancaria {
      * @param cuentaProvisional
      * @return (String) Mensaje de la operación.
      */
-    
-    public static String validarCuentaCorrienteCliente(String cuentaProvisional) {
+    public static String validarCuentaCorrienteCliente(String cuentaParametro) {
         String mensajeCuenta = "";
 
         // Declaramos un booleano que comprobara que cada componente de la cuenta
         // corriente sea correcto.
         boolean validaComponente = true;
 
+        // Eliminamos espacios en blanco dentro de la cuenta si los tuviera.
+        String cuentaProvisional = eliminarEspaciosGuiones(cuentaParametro);
+        
         // Declaramos una cadena con la Entidad y la oficina, para validar los 
         // digitos de control
         String controlEntidadSucursal;
@@ -212,6 +214,7 @@ public class CuentaBancaria {
                             }
                             break;
                     }
+                    mensajeCuenta = "OK";
                 } else {
                     // Si algun componente de la cuenta no es valido, se rompe el bucle y  se
                     // vuelve a solicitar el numero de cuenta al usuario.
@@ -246,7 +249,16 @@ public class CuentaBancaria {
             resultado += digito * factores[i];
         }
         resultado = 11 - (resultado % 11);
-        resultado = (resultado == 11) ? 0 : 1;
+        
+        // Comprobamos que el modulo de la operacion del digito, y luego se le restara
+        // el propio valor del digito, y se comprobara que sea
+        // 11 en cuyo caso se asignara el valor 0, 10 en este caso se asignara el valor 1
+        // u otro resultado en cuyo caso se pondra su valor (0 al 9).
+        if(resultado == 11){
+            resultado = 0;
+        }else if(resultado == 10){
+            resultado = 1;
+        }
 
         return resultado;
     }
@@ -294,6 +306,23 @@ public class CuentaBancaria {
             }
         }
         return resultado;
+    }
+    
+    /**
+     * Método utilitario que elimina los espacios en blanco y guiones (-) 
+     * dentro de una cadena de caracteres, ya que se puede dar ambas casuisticas 
+     * a la hora de enviar una los numeros de una cuenta corriente.
+     * @param cadena
+     * @return (String) cadena sin espacios.
+     */
+    private static String eliminarEspaciosGuiones(String cadena){
+        int longitud = cadena.length();
+        StringBuilder constructorCadenas = new StringBuilder();
+        for (int i = 0; i < longitud; i++) {
+            if (cadena.charAt(i) != ' ' && cadena.charAt(i) != '-')
+            constructorCadenas.append(cadena.charAt(i));
+        }
+        return constructorCadenas.toString();
     }
     
    /**
