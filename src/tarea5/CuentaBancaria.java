@@ -21,6 +21,22 @@ public class CuentaBancaria {
     public static final int TOTAL_CUENTA = 20;
     // Mensaje Validaciones correctas
     public static final String VALIDACION_OK = "OK";
+    // Operación ingreso en cuenta
+    public static final String INGRESO = "+";
+    // Operación retiro en cuenta
+    public static final String RETIRO = "-";
+    // Operación consulta en cuenta
+    public static final String CONSULTA = "=";
+    // Operacion cuenta corriente numero cuenta completo
+    private final String NUMERO_CUENTA_COMPLETO = "Completo";
+    // Operacion cuenta corriente entidad
+    private final String NUMERO_ENTIDAD = "Entidad";
+    // Operacion cuenta corriente oficina
+    private final String NUMERO_OFICINA = "Oficina";
+    // Operacion cuenta corriente numero de cuenta (10 digitos final)
+    private final String NUMERO_CUENTA = "Cuenta";
+    // Operacion cuenta corriente digitos de control
+    private final String DIGITOS_CONTROL = "Digitos";
 // ***********************************************************************************
 
 // ********************************* Constructores. **********************************    
@@ -55,6 +71,9 @@ public class CuentaBancaria {
 // ********************************* Validaciones ************************************
         // Condición del bucle do while del titular
         boolean condicionTitular = false;
+        
+        System.out.println("***** Titular de la cuenta. *****");
+        
         // Pedimos los datos al usuario, este metodo se encargara de validar y 
         // de pedir de nuevo la información si la introducida no es correcta
         do {
@@ -72,7 +91,7 @@ public class CuentaBancaria {
             }
         } while (!condicionTitular);
 
-        System.out.println("** Cuenta Corriente completa. **");
+        System.out.println("***** Cuenta Corriente completa. *****");
         
         // Condición del bucle do while Cuenta Corriente.
         boolean condicionCuenta = false;
@@ -83,11 +102,15 @@ public class CuentaBancaria {
             // información en una variable provisional.
             String cuentaProvisional = escanerEntrada.nextLine();
             
-            String mensajeCuenta = validarCuentaCorrienteCliente(cuentaProvisional);
+            // Eliminamos espacios en blanco dentro de la cuenta si los tuviera.
+            String cuentaLimpia = eliminarEspaciosGuiones(cuentaProvisional);
+        
+            // Validamos la cuenta que ha introducido el usuario.
+            String mensajeCuenta = validarCuentaCorrienteCliente(cuentaLimpia);
             
             if(mensajeCuenta.equals(VALIDACION_OK)){
                 condicionCuenta = true;
-                cuentaValida = cuentaProvisional;
+                cuentaValida = cuentaLimpia;
             }else{
                 System.out.println(mensajeCuenta);
             }
@@ -98,7 +121,19 @@ public class CuentaBancaria {
         CuentaBancaria cuentaBancaria = new CuentaBancaria(TitularValido, cuentaValida);
     
     // Pintamos el menu de opciones.
-        pintarOpcionesMenu(cuentaBancaria);
+        pintarOpcionesMenu(TitularValido);
+            
+    // Declaramos variable que controlara la ejecución del menu, si el 
+    // usuario elije la opcion 10 el programa terminara la ejecución.
+        boolean terminaEjecucion = false;
+        
+        do{
+            // Capturamos la opción enviada por el usuario
+            String opcionMenu = escanerEntrada.nextLine();
+            
+            // Implementamos el menu.
+            menuImplementado(cuentaBancaria, opcionMenu, escanerEntrada, terminaEjecucion);
+        }while(!terminaEjecucion);
 // ***********************************************************************************
     }
     
@@ -127,16 +162,13 @@ public class CuentaBancaria {
      * @param cuentaProvisional
      * @return (String) Mensaje de la operación.
      */
-    public static String validarCuentaCorrienteCliente(String cuentaParametro) {
+    public static String validarCuentaCorrienteCliente(String cuentaProvisional) {
         String mensajeCuenta = "";
 
         // Declaramos un booleano que comprobara que cada componente de la cuenta
         // corriente sea correcto.
         boolean validaComponente = true;
-
-        // Eliminamos espacios en blanco dentro de la cuenta si los tuviera.
-        String cuentaProvisional = eliminarEspaciosGuiones(cuentaParametro);
-        
+       
         // Declaramos una cadena con la Entidad y la oficina, para validar los 
         // digitos de control
         String controlEntidadSucursal;
@@ -199,7 +231,6 @@ public class CuentaBancaria {
                             // de concatenar el primer digito con el segundo.
                             String digitoControlResultado = String.valueOf(digitoEntidadSucursal).concat(String.valueOf(digitoNumeroCuenta));
 // ***********************************************************************************************************                                
-
                             // Comprobamos que el digito de control resultante sea valido
                             if (!digitoControlResultado.equals(cadenaAuxiliar)) {
                                 mensajeCuenta = "Los digitos del control no son validos";
@@ -213,14 +244,14 @@ public class CuentaBancaria {
                                 validaComponente = false;
                             }
                             break;
-                    }
-                    mensajeCuenta = "OK";
+                    }    
                 } else {
                     // Si algun componente de la cuenta no es valido, se rompe el bucle y  se
                     // vuelve a solicitar el numero de cuenta al usuario.
                     break;
                 }
             }
+            mensajeCuenta = (validaComponente) ? VALIDACION_OK : mensajeCuenta;
         }
         return mensajeCuenta;
     }
@@ -328,22 +359,149 @@ public class CuentaBancaria {
    /**
      * Método que pinta en consola las opciones del menu de la aplicación.
      */
-    private void pintarOpcionesMenu(CuentaBancaria cuentaBancaria){
-        System.out.println("********************************************************");
-        System.out.println("***** Bienvenido " + cuentaBancaria.getTitular() + " *****");
-        System.out.println("***** Dispone de las siguientes opciones: *****");
-        System.out.println("***** Dispone de las siguientes opciones: *****");
-        System.out.println("***** 1) Ver el número de cuenta completo (CCC - Código Cuenta Cliente). *****");
-        System.out.println("***** 2) Ver el titular de la cuenta. *****");
-        System.out.println("***** 3) Ver el código de la entidad. *****");
-        System.out.println("***** 4) Ver el titular de la cuenta. *****");
-        System.out.println("***** 5) Ver el titular de la cuenta. *****");
-        System.out.println("***** 6) Ver el titular de la cuenta. *****");
-        System.out.println("***** 7) Ver el titular de la cuenta. *****");
-        System.out.println("***** 8) Ver el titular de la cuenta. *****");
-        System.out.println("***** 9) Ver el titular de la cuenta. *****");
-        System.out.println("**** 10) Ver el titular de la cuenta. *****");
-        System.out.println("********************************************************");
+    private void pintarOpcionesMenu(String titular){
+
+        // Comprobamos si viene informado el titular, si no viene informado significa que se ha elegido
+        // una opción no valida en el menu de la aplicación.
+        String mensajeBienvenida = (null != titular && !titular.isEmpty()) 
+                ? "*****       Bienvenido      " + titular + "      ****************"
+                : "************           Opciones validas          ****************";
+        
+        System.out.println("*****************************************************************");
+        System.out.println(mensajeBienvenida);
+        System.out.println("*****************************************************************");
+        System.out.println("***** Dispone de las siguientes opciones:           *************");
+        System.out.println("*****************************************************************");
+        System.out.println("***** (1) Ver el número de cuenta completo.         *************");
+        System.out.println("***** (2) Ver el titular de la cuenta.              *************");
+        System.out.println("***** (3) Ver el código de la entidad.              *************");
+        System.out.println("***** (4) Ver el código de la oficina.              *************");
+        System.out.println("***** (5) Ver el número de la cuenta.               *************");
+        System.out.println("***** (6) Ver los dígitos de control de la cuenta.  *************");
+        System.out.println("***** (7) Realizar un ingreso.                      *************");
+        System.out.println("***** (8) Retirar efectivo.                         *************");
+        System.out.println("***** (9) Consultar saldo.                          *************");
+        System.out.println("**** (10) Salir de la aplicación.                   *************");
+        System.out.println("*****************************************************************");
+    }
+    
+    /**
+     * Método que ejecuta la opcion que el usuario elija.
+     * se validara que las opciones (del 1 al 10) si no es ninguna de estas
+     * enviara al usuario un mensaje de error y volvera a solicitar la opcion.
+     * @param opcion 
+     */
+    private void menuImplementado(CuentaBancaria cuentaBancaria, String opcion, Scanner escanerEntrada,
+            boolean terminaAplicacion){
+        // Variable en la que se guardara la cantidad introducida por el usuario.
+        String cantidadSaldoUsuario;       
+        
+        switch(opcion){
+            case "1": // Ver el número de cuenta completo.
+                operacionesCuentaCorriente(cuentaBancaria, NUMERO_CUENTA_COMPLETO);
+                break;
+            case "2": // Ver el titular de la cuenta.
+                System.out.println("***** El titular de la cuenta es " + cuentaBancaria.getTitular() + " *****");
+                break;
+            case "3": // Ver el código de la entidad.
+                operacionesCuentaCorriente(cuentaBancaria, NUMERO_ENTIDAD);
+                break;
+            case "4": // Ver el código de la oficina.
+                operacionesCuentaCorriente(cuentaBancaria, NUMERO_OFICINA);
+                break;
+            case "5": // Ver el número de la cuenta.
+                operacionesCuentaCorriente(cuentaBancaria, NUMERO_CUENTA);
+                break;
+            case "6": // Ver los dígitos de control de la cuenta.
+                operacionesCuentaCorriente(cuentaBancaria, DIGITOS_CONTROL);
+                break;
+            case "7": // Realizar un ingreso.
+                System.out.println("***** Inserte cantidad a ingresar en su cuenta *****");
+                cantidadSaldoUsuario = escanerEntrada.nextLine();
+                operacionesSaldo(cuentaBancaria, cantidadSaldoUsuario, opcion);
+                break;
+            case "8": // Retirar efectivo.
+                System.out.println("***** Inserte cantidad a retirar de su cuenta *****");
+                cantidadSaldoUsuario = escanerEntrada.nextLine();
+                operacionesSaldo(cuentaBancaria, cantidadSaldoUsuario, opcion);
+                break;
+            case "9": // Consultar saldo.
+                operacionesSaldo(cuentaBancaria, "", opcion);
+                break;
+            case "10": // Termina aplicación
+                terminaAplicacion = true;
+                break;
+            default : // Cualquier otra casuistica no contemplada.
+                System.out.println("Esta opción " + opcion + " no esta contemplada.");
+                pintarOpcionesMenu("");
+                break;
+        }
+    }
+    
+    /**
+     * Método que realizara las operaciones sobre el saldo, estas operaciones seran
+     * ingreso (+), retiro(-) y consulta(=)
+     * @param cuentaBancaria
+     * @param cantidad
+     * @param operacion 
+     */
+    private void operacionesSaldo(CuentaBancaria cuentaBancaria, String cantidadParametro, String operacion){
+        // Obtenemos el saldo actual de la cuenta.
+        double saldoActualCuenta = cuentaBancaria.getSaldoActual();
+        try{
+            // Parsearemos la cantidad a tipo double
+            double cantidadNumerica = Double.parseDouble(cantidadParametro);
+            switch(operacion){
+                case INGRESO: // Sumamos la cantidad llegada por parametro al saldo disponible.
+                    cuentaBancaria.setSaldoActual(saldoActualCuenta + cantidadNumerica);
+                    break;
+                case RETIRO: // Sumamos la cantidad llegada por parametro al saldo disponible.
+                    // Comprobamos que el saldo sea mayor que la cantidad a retirar, y que el saldo
+                    // sea mayor que cero.
+                    if(saldoActualCuenta == 0.0 || saldoActualCuenta < cantidadNumerica){
+                        String mensaje = (saldoActualCuenta == 0.0) 
+                                ? "El saldo actual es 0?, no puede realizar ningun retiro de dinero."
+                                : "El saldo actual es de " + saldoActual + "?, y la cantidad a retirar es mayor " + "\n" 
+                                    + cantidadParametro + "?, no se puede realizar la operación solicitada.";
+                        System.out.println(mensaje);
+                    }else{
+                        cuentaBancaria.setSaldoActual(saldoActualCuenta - cantidadNumerica);
+                    }
+                    break;
+                case CONSULTA: // Mostamos al usuario el saldo que tiene disponible.
+                    System.out.println("El saldo actual de su cuenta es " + saldoActualCuenta + "?.");
+                    break;
+            }
+        }catch(NumberFormatException ex){
+            // Si la cantidad introducida por el usuario no es un numero, lanzara una excepción.
+            System.out.println("La cantidad introducida " + cantidadParametro + " debe ser un numero.");
+        }
+    }
+    
+    /**
+     * Método que realizara las operaciones sobre el numero de cuenta bancaria.
+     * @param cuentaBancaria
+     * @param operacion 
+     */
+    private void operacionesCuentaCorriente(CuentaBancaria cuentaBancaria, String operacion){
+    
+        switch(operacion){
+            case NUMERO_CUENTA_COMPLETO :
+                
+                break;
+            case NUMERO_ENTIDAD :
+                
+                break;
+            case NUMERO_OFICINA :
+                
+                break;
+            case NUMERO_CUENTA :
+                
+                break;
+            case DIGITOS_CONTROL :
+                
+                break;
+        }
     }
 // ***********************************************************************************
 }
