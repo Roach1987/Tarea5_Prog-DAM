@@ -389,7 +389,10 @@ public class CuentaBancaria {
      * Método que ejecuta la opcion que el usuario elija.
      * se validara que las opciones (del 1 al 10) si no es ninguna de estas
      * enviara al usuario un mensaje de error y volvera a solicitar la opcion.
-     * @param opcion 
+     * @param cuentaBancaria
+     * @param opcion
+     * @param escanerEntrada
+     * @param terminaAplicacion 
      */
     private void menuImplementado(CuentaBancaria cuentaBancaria, String opcion, Scanner escanerEntrada,
             boolean terminaAplicacion){
