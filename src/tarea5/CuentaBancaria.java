@@ -37,6 +37,8 @@ public class CuentaBancaria {
     private final String NUMERO_CUENTA = "Cuenta";
     // Operacion cuenta corriente digitos de control
     private final String DIGITOS_CONTROL = "Digitos";
+    // Simbolo separador cuenta.
+    public static final String SEPARADOR_CUENTA = "-";
 // ***********************************************************************************
 
 // ********************************* Constructores. **********************************    
@@ -364,7 +366,7 @@ public class CuentaBancaria {
         // Comprobamos si viene informado el titular, si no viene informado significa que se ha elegido
         // una opción no valida en el menu de la aplicación.
         String mensajeBienvenida = (null != titular && !titular.isEmpty()) 
-                ? "*****       Bienvenido      " + titular + "      ****************"
+                ? "************              Bienvenido             ****************"
                 : "************           Opciones validas          ****************";
         
         System.out.println("*****************************************************************");
@@ -401,22 +403,24 @@ public class CuentaBancaria {
         
         switch(opcion){
             case "1": // Ver el número de cuenta completo.
-                operacionesCuentaCorriente(cuentaBancaria, NUMERO_CUENTA_COMPLETO);
+                operacionesCuentaCorriente(cuentaBancaria.getCuentaCorriente(), NUMERO_CUENTA_COMPLETO);
                 break;
             case "2": // Ver el titular de la cuenta.
+                System.out.println("******************************************************");
                 System.out.println("***** El titular de la cuenta es " + cuentaBancaria.getTitular() + " *****");
+                System.out.println("******************************************************");
                 break;
             case "3": // Ver el código de la entidad.
-                operacionesCuentaCorriente(cuentaBancaria, NUMERO_ENTIDAD);
+                operacionesCuentaCorriente(cuentaBancaria.getCuentaCorriente(), NUMERO_ENTIDAD);
                 break;
             case "4": // Ver el código de la oficina.
-                operacionesCuentaCorriente(cuentaBancaria, NUMERO_OFICINA);
+                operacionesCuentaCorriente(cuentaBancaria.getCuentaCorriente(), NUMERO_OFICINA);
                 break;
             case "5": // Ver el número de la cuenta.
-                operacionesCuentaCorriente(cuentaBancaria, NUMERO_CUENTA);
+                operacionesCuentaCorriente(cuentaBancaria.getCuentaCorriente(), NUMERO_CUENTA);
                 break;
             case "6": // Ver los dígitos de control de la cuenta.
-                operacionesCuentaCorriente(cuentaBancaria, DIGITOS_CONTROL);
+                operacionesCuentaCorriente(cuentaBancaria.getCuentaCorriente(), DIGITOS_CONTROL);
                 break;
             case "7": // Realizar un ingreso.
                 System.out.println("***** Inserte cantidad a ingresar en su cuenta *****");
@@ -433,9 +437,14 @@ public class CuentaBancaria {
                 break;
             case "10": // Termina aplicación
                 terminaAplicacion = true;
+                System.out.println("******************************************************");
+                System.out.println("****************** Adios hasta pronto ****************");
+                System.out.println("******************************************************");
                 break;
             default : // Cualquier otra casuistica no contemplada.
-                System.out.println("Esta opción " + opcion + " no esta contemplada.");
+                System.out.println("******************************************************");
+                System.out.println("** Esta opción (" + opcion + ") no esta contemplada.**");
+                System.out.println("******************************************************");
                 pintarOpcionesMenu("");
                 break;
         }
@@ -451,6 +460,7 @@ public class CuentaBancaria {
     private void operacionesSaldo(CuentaBancaria cuentaBancaria, String cantidadParametro, String operacion){
         // Obtenemos el saldo actual de la cuenta.
         double saldoActualCuenta = cuentaBancaria.getSaldoActual();
+        System.out.println("******************************************************");
         try{
             // Parsearemos la cantidad a tipo double
             double cantidadNumerica = Double.parseDouble(cantidadParametro);
@@ -479,6 +489,7 @@ public class CuentaBancaria {
             // Si la cantidad introducida por el usuario no es un numero, lanzara una excepción.
             System.out.println("La cantidad introducida " + cantidadParametro + " debe ser un numero.");
         }
+        System.out.println("******************************************************");
     }
     
     /**
@@ -486,25 +497,44 @@ public class CuentaBancaria {
      * @param cuentaBancaria
      * @param operacion 
      */
-    private void operacionesCuentaCorriente(CuentaBancaria cuentaBancaria, String operacion){
-    
+    private void operacionesCuentaCorriente(String cuentaCorriente, String operacion){
+        // Entidad
+        String entidad = cuentaCorriente.substring(0, 4);
+        
+        // Oficina
+        String oficina = cuentaCorriente.substring(4, 8);
+        
+        // Digitos de control
+        String digitosControl = cuentaCorriente.substring(8, 10);
+        
+        // Numero de cuenta
+        String numeroCuenta = cuentaCorriente.substring(10, 20);
+        
+        System.out.println("******************************************************");
         switch(operacion){
             case NUMERO_CUENTA_COMPLETO :
-                
+                System.out.println("********** Su numero de cuenta completo CCC **********");
+                System.out.println("***** ".concat(entidad).concat(SEPARADOR_CUENTA).concat(oficina).concat(SEPARADOR_CUENTA)
+                    .concat(digitosControl).concat(SEPARADOR_CUENTA).concat(numeroCuenta).concat(" *****"));
                 break;
             case NUMERO_ENTIDAD :
-                
+                System.out.println("***************** Su numero entidad ******************");
+                System.out.println("******************** ".concat(entidad).concat(" *********************"));
                 break;
             case NUMERO_OFICINA :
-                
+                System.out.println("***************** Su numero oficina ******************");
+                System.out.println("******************** ".concat(oficina).concat(" *********************"));
                 break;
             case NUMERO_CUENTA :
-                
+                System.out.println("**************** Su numero de cuenta *****************");
+                System.out.println("****************** ".concat(numeroCuenta).concat(" *******************"));
                 break;
             case DIGITOS_CONTROL :
-                
+                System.out.println("******** Los digitos de control de su cuenta *********");
+                System.out.println("************************* ".concat(digitosControl).concat(" *************************"));
                 break;
         }
+        System.out.println("******************************************************");
     }
 // ***********************************************************************************
 }
