@@ -40,6 +40,15 @@ public class CuentaBancaria {
     // Simbolo separador cuenta.
     public static final String SEPARADOR_CUENTA = "-";
 // ***********************************************************************************
+    
+// ************* Declaración de variables Globales de la aplicación. *****************
+    // Declaramos un booleano con el que controlaremos el mensaje de siguiente operación
+    private boolean siguienteOperacion;
+    
+    // Declaramos variable que controlara la ejecución del menu, si el 
+    // usuario elije la opcion 10 el programa terminara la ejecución.
+    private boolean terminaEjecucion;
+// ***********************************************************************************
 
 // ********************************* Constructores. **********************************    
     // Constructor por defecto
@@ -47,11 +56,15 @@ public class CuentaBancaria {
     }
 
     // Constructor con parametro titular y cuentaCorriente en el cual definimos el 
-    // saldo actual, que por defecto sera 0
+    // saldo actual, que por defecto sera 0.
+    // Tambien incializamos los booleanos que se encargaran de detener la aplicación y mostrar mensaje
+    // de siguiente ejecución, para poder controlarlos globalmente en la aplicación.
     public CuentaBancaria(String titular, String cuentaCorriente) {
         this.titular = titular;
         this.cuentaCorriente = cuentaCorriente;
         this.saldoActual = 0.0;
+        this.terminaEjecucion = false;
+        this.siguienteOperacion = true;
     }
 // ***********************************************************************************    
 
@@ -69,7 +82,7 @@ public class CuentaBancaria {
         Scanner escanerEntrada = new Scanner(System.in);
         
         System.out.println("***********************************************************");
-        System.out.println("** Hola, por favor introduzca los datos correspondientes a su cuenta bancaria.");
+        System.out.println("** Hola, por favor introduzca los datos correspondientes a su cuenta bancaria. **");
 // ********************************* Validaciones ************************************
         // Condición del bucle do while del titular
         boolean condicionTitular = false;
@@ -121,21 +134,32 @@ public class CuentaBancaria {
 // ********************************* Menu aplicación *********************************
     // Creamos el objeto CuentaBancaria con la informacion obtenida.
         CuentaBancaria cuentaBancaria = new CuentaBancaria(TitularValido, cuentaValida);
-    
-    // Pintamos el menu de opciones.
-        pintarOpcionesMenu(TitularValido);
             
-    // Declaramos variable que controlara la ejecución del menu, si el 
-    // usuario elije la opcion 10 el programa terminara la ejecución.
-        boolean terminaEjecucion = false;
-        
+    // Pintamos el menu de opciones.
+        pintarOpcionesMenu(isSiguienteOperacion());
+                    
         do{
             // Capturamos la opción enviada por el usuario
             String opcionMenu = escanerEntrada.nextLine();
             
             // Implementamos el menu.
-            menuImplementado(cuentaBancaria, opcionMenu, escanerEntrada, terminaEjecucion);
-        }while(!terminaEjecucion);
+            menuImplementado(cuentaBancaria, opcionMenu, escanerEntrada);
+            
+            if(!cuentaBancaria.isTerminaEjecucion() && cuentaBancaria.isSiguienteOperacion()){
+                System.out.println("");
+                System.out.println("*****************************************************************");
+                System.out.println("*******   ¡Indique la siguiente operación a realizar!   *********");
+                System.out.println("*****************************************************************");
+                System.out.println("");
+            }
+            
+            // Comprobamos si el booleano de siguiente operación esta a false, esto ocurrira
+            // si el usuario elige una opcion no contemplada en el menu de la aplicación,
+            // no pintara en esa vuelta de bucle, pero si que debera pintar en las siguietes,
+            // por lo que setearemos este a true.
+            if(!cuentaBancaria.isSiguienteOperacion())
+                cuentaBancaria.setSiguienteOperacion(true);
+        }while(!cuentaBancaria.isTerminaEjecucion());
 // ***********************************************************************************
     }
     
@@ -316,6 +340,22 @@ public class CuentaBancaria {
     public void setSaldoActual(double saldoActual) {
         this.saldoActual = saldoActual;
     } 
+
+    public boolean isSiguienteOperacion() {
+        return siguienteOperacion;
+    }
+
+    public void setSiguienteOperacion(boolean siguienteOperacion) {
+        this.siguienteOperacion = siguienteOperacion;
+    }
+
+    public boolean isTerminaEjecucion() {
+        return terminaEjecucion;
+    }
+
+    public void setTerminaEjecucion(boolean terminaEjecucion) {
+        this.terminaEjecucion = terminaEjecucion;
+    }
 // ***********************************************************************************
 
 // ********************************* Metodos Utilitarios *****************************
@@ -361,18 +401,18 @@ public class CuentaBancaria {
    /**
      * Método que pinta en consola las opciones del menu de la aplicación.
      */
-    private void pintarOpcionesMenu(String titular){
+    private void pintarOpcionesMenu(boolean siguienteOperacion){
 
         // Comprobamos si viene informado el titular, si no viene informado significa que se ha elegido
         // una opción no valida en el menu de la aplicación.
-        String mensajeBienvenida = (null != titular && !titular.isEmpty()) 
+        String mensajeBienvenida = (siguienteOperacion) 
                 ? "************              Bienvenido             ****************"
                 : "************           Opciones validas          ****************";
         
         System.out.println("*****************************************************************");
         System.out.println(mensajeBienvenida);
         System.out.println("*****************************************************************");
-        System.out.println("***** Dispone de las siguientes opciones:           *************");
+        System.out.println("*****     Dispone de las siguientes opciones.       *************");
         System.out.println("*****************************************************************");
         System.out.println("***** (1) Ver el número de cuenta completo.         *************");
         System.out.println("***** (2) Ver el titular de la cuenta.              *************");
@@ -385,6 +425,9 @@ public class CuentaBancaria {
         System.out.println("***** (9) Consultar saldo.                          *************");
         System.out.println("**** (10) Salir de la aplicación.                   *************");
         System.out.println("*****************************************************************");
+        System.out.println("**** ¡Seleccione unicamente el numero de la opcion deseada! *****");
+        System.out.println("**********    ¿Que operación desea realizar?     ****************");
+        System.out.println("*****************************************************************");
     }
     
     /**
@@ -396,8 +439,7 @@ public class CuentaBancaria {
      * @param escanerEntrada
      * @param terminaAplicacion 
      */
-    private void menuImplementado(CuentaBancaria cuentaBancaria, String opcion, Scanner escanerEntrada,
-            boolean terminaAplicacion){
+    private void menuImplementado(CuentaBancaria cuentaBancaria, String opcion, Scanner escanerEntrada){
         // Variable en la que se guardara la cantidad introducida por el usuario.
         String cantidadSaldoUsuario;       
         
@@ -425,27 +467,33 @@ public class CuentaBancaria {
             case "7": // Realizar un ingreso.
                 System.out.println("***** Inserte cantidad a ingresar en su cuenta *****");
                 cantidadSaldoUsuario = escanerEntrada.nextLine();
-                operacionesSaldo(cuentaBancaria, cantidadSaldoUsuario, opcion);
+                operacionesSaldo(cuentaBancaria, cantidadSaldoUsuario, INGRESO);
                 break;
             case "8": // Retirar efectivo.
-                System.out.println("***** Inserte cantidad a retirar de su cuenta *****");
-                cantidadSaldoUsuario = escanerEntrada.nextLine();
-                operacionesSaldo(cuentaBancaria, cantidadSaldoUsuario, opcion);
+                // Si la cuenta actualmente esta en saldo 0 no se podra realizar ningun retiro.
+                if(cuentaBancaria.getSaldoActual() == 0){
+                    System.out.println("**** El saldo actual es 0.0, no puede realizar ningun retiro. ***");
+                }else{
+                    System.out.println("***** Inserte cantidad a retirar de su cuenta *****");
+                    cantidadSaldoUsuario = escanerEntrada.nextLine();
+                    operacionesSaldo(cuentaBancaria, cantidadSaldoUsuario, RETIRO);
+                }
                 break;
             case "9": // Consultar saldo.
-                operacionesSaldo(cuentaBancaria, "", opcion);
+                operacionesSaldo(cuentaBancaria, "", CONSULTA);
                 break;
             case "10": // Termina aplicación
-                terminaAplicacion = true;
+                cuentaBancaria.setTerminaEjecucion(true);
                 System.out.println("******************************************************");
                 System.out.println("****************** Adios hasta pronto ****************");
                 System.out.println("******************************************************");
                 break;
             default : // Cualquier otra casuistica no contemplada.
+                cuentaBancaria.setSiguienteOperacion(false);
                 System.out.println("******************************************************");
                 System.out.println("** Esta opción (" + opcion + ") no esta contemplada.**");
                 System.out.println("******************************************************");
-                pintarOpcionesMenu("");
+                pintarOpcionesMenu(cuentaBancaria.isSiguienteOperacion());
                 break;
         }
     }
@@ -460,29 +508,36 @@ public class CuentaBancaria {
     private void operacionesSaldo(CuentaBancaria cuentaBancaria, String cantidadParametro, String operacion){
         // Obtenemos el saldo actual de la cuenta.
         double saldoActualCuenta = cuentaBancaria.getSaldoActual();
+        
+        //Declaramos la variable en la que guardaremos la cantidad parseada de String a double
+        double cantidadNumerica = 0.0;
+        
         System.out.println("******************************************************");
+        
         try{
             // Parsearemos la cantidad a tipo double
-            double cantidadNumerica = Double.parseDouble(cantidadParametro);
+            if(!operacion.equals(CONSULTA)){
+                cantidadNumerica = Double.parseDouble(cantidadParametro);
+            }
+            
             switch(operacion){
                 case INGRESO: // Sumamos la cantidad llegada por parametro al saldo disponible.
                     cuentaBancaria.setSaldoActual(saldoActualCuenta + cantidadNumerica);
+                    System.out.println("********* " + cantidadParametro + " ingresados correctamente. ***********");
                     break;
                 case RETIRO: // Sumamos la cantidad llegada por parametro al saldo disponible.
                     // Comprobamos que el saldo sea mayor que la cantidad a retirar, y que el saldo
                     // sea mayor que cero.
-                    if(saldoActualCuenta == 0.0 || saldoActualCuenta < cantidadNumerica){
-                        String mensaje = (saldoActualCuenta == 0.0) 
-                                ? "El saldo actual es 0?, no puede realizar ningun retiro de dinero."
-                                : "El saldo actual es de " + saldoActual + "?, y la cantidad a retirar es mayor " + "\n" 
-                                    + cantidadParametro + "?, no se puede realizar la operación solicitada.";
-                        System.out.println(mensaje);
+                    if(saldoActualCuenta < cantidadNumerica){
+                        System.out.println("El saldo actual es de " + saldoActualCuenta + ", y la cantidad a retirar es " + "\n" + cantidadParametro
+                                     + ", no se puede realizar la operación solicitada.");
                     }else{
                         cuentaBancaria.setSaldoActual(saldoActualCuenta - cantidadNumerica);
+                        System.out.println("********* " + cantidadParametro + " retirados correctamente. ***********");
                     }
                     break;
                 case CONSULTA: // Mostamos al usuario el saldo que tiene disponible.
-                    System.out.println("El saldo actual de su cuenta es " + saldoActualCuenta + "?.");
+                    System.out.println("El saldo actual de su cuenta es " + saldoActualCuenta);
                     break;
             }
         }catch(NumberFormatException ex){
@@ -514,20 +569,20 @@ public class CuentaBancaria {
         switch(operacion){
             case NUMERO_CUENTA_COMPLETO :
                 System.out.println("********** Su numero de cuenta completo CCC **********");
-                System.out.println("***** ".concat(entidad).concat(SEPARADOR_CUENTA).concat(oficina).concat(SEPARADOR_CUENTA)
-                    .concat(digitosControl).concat(SEPARADOR_CUENTA).concat(numeroCuenta).concat(" *****"));
+                System.out.println("**********     ".concat(entidad).concat(SEPARADOR_CUENTA).concat(oficina).concat(SEPARADOR_CUENTA)
+                    .concat(digitosControl).concat(SEPARADOR_CUENTA).concat(numeroCuenta).concat("      **********"));
                 break;
             case NUMERO_ENTIDAD :
                 System.out.println("***************** Su numero entidad ******************");
-                System.out.println("******************** ".concat(entidad).concat(" *********************"));
+                System.out.println("*********************** ".concat(entidad).concat(" *************************"));
                 break;
             case NUMERO_OFICINA :
                 System.out.println("***************** Su numero oficina ******************");
-                System.out.println("******************** ".concat(oficina).concat(" *********************"));
+                System.out.println("*********************** ".concat(oficina).concat(" *************************"));
                 break;
             case NUMERO_CUENTA :
                 System.out.println("**************** Su numero de cuenta *****************");
-                System.out.println("****************** ".concat(numeroCuenta).concat(" *******************"));
+                System.out.println("******************** ".concat(numeroCuenta).concat(" **********************"));
                 break;
             case DIGITOS_CONTROL :
                 System.out.println("******** Los digitos de control de su cuenta *********");
