@@ -428,7 +428,7 @@ public class CuentaBancaria {
             case "10": // Termina aplicación
                 cuentaBancaria.setTerminaEjecucion(true);
                 System.out.println("******************************************************");
-                System.out.println("****************** Adios hasta pronto ****************");
+                System.out.println("*********** Adios "+ cuentaBancaria.getTitular() + ", hasta pronto **********");
                 System.out.println("******************************************************");
                 break;
             default : // Cualquier otra casuistica no contemplada.

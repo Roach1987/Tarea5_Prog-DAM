@@ -1,9 +1,7 @@
 package tarea5;
 
 import java.util.Scanner;
-import static tarea5.CuentaBancaria.VALIDACION_OK;
-import static tarea5.CuentaBancaria.compruebaTitular;
-import static tarea5.CuentaBancaria.validarCuentaCorrienteCliente;
+
 
 /**
  * 
@@ -41,9 +39,9 @@ public class AplicacionCuentaBancaria {
             // información en una variable provisional.
             String titularProvisional = escanerEntrada.nextLine();
             
-            String mensajeTitular = compruebaTitular(titularProvisional);
+            String mensajeTitular = CuentaBancaria.compruebaTitular(titularProvisional);
             
-            if(mensajeTitular.equals(VALIDACION_OK)){
+            if(mensajeTitular.equals("OK")){
                 condicionTitular = true;
                 TitularValido = titularProvisional;
             }else{
@@ -68,7 +66,7 @@ public class AplicacionCuentaBancaria {
             // Validamos la cuenta que ha introducido el usuario.
             String mensajeCuenta = CuentaBancaria.validarCuentaCorrienteCliente(cuentaLimpia);
             
-            if(mensajeCuenta.equals(VALIDACION_OK)){
+            if(mensajeCuenta.equals("OK")){
                 condicionCuenta = true;
                 cuentaValida = cuentaLimpia;
             }else{
