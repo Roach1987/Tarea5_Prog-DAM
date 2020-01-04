@@ -71,72 +71,13 @@ public class CuentaBancaria {
     /**
      * Método principal que se expondra al usuario para que realice la comprobacion de su Cuenta corriente.
      * Tanto el titular como la cuenta corriente se pediran al usuario por consola.
+     * @param cuentaBancaria
+     * @param escanerEntrada
      */
-    public void comprobarCuenta() {
-        // Declaramos las variables para obtenes los
-        // datos del titular y numero de cuenta
-        String TitularValido = "";
-        String cuentaValida = "";
-        
-        // Objeto con el que pediremos y recibiremos la entrada de parametros por el usuario.
-        Scanner escanerEntrada = new Scanner(System.in);
-        
-        System.out.println("***********************************************************");
-        System.out.println("** Hola, por favor introduzca los datos correspondientes a su cuenta bancaria. **");
-// ********************************* Validaciones ************************************
-        // Condición del bucle do while del titular
-        boolean condicionTitular = false;
-        
-        System.out.println("***** Titular de la cuenta. *****");
-        
-        // Pedimos los datos al usuario, este metodo se encargara de validar y 
-        // de pedir de nuevo la información si la introducida no es correcta
-        do {
-            // Obtenemos el titular de la cuenta y guardamos la 
-            // información en una variable provisional.
-            String titularProvisional = escanerEntrada.nextLine();
+    public void comprobarCuenta(CuentaBancaria cuentaBancaria, Scanner escanerEntrada) {
             
-            String mensajeTitular = compruebaTitular(titularProvisional);
-            
-            if(mensajeTitular.equals(VALIDACION_OK)){
-                condicionTitular = true;
-                TitularValido = titularProvisional;
-            }else{
-                System.out.println(mensajeTitular);
-            }
-        } while (!condicionTitular);
-
-        System.out.println("***** Cuenta Corriente completa. *****");
-        
-        // Condición del bucle do while Cuenta Corriente.
-        boolean condicionCuenta = false;
-        
-        // Obtenemos la Cuenta Corriente de Cliente.
-        do {
-            // Obtenemos la cuenta corriente y guardamos la 
-            // información en una variable provisional.
-            String cuentaProvisional = escanerEntrada.nextLine();
-            
-            // Eliminamos espacios en blanco dentro de la cuenta si los tuviera.
-            String cuentaLimpia = eliminarEspaciosGuiones(cuentaProvisional);
-        
-            // Validamos la cuenta que ha introducido el usuario.
-            String mensajeCuenta = validarCuentaCorrienteCliente(cuentaLimpia);
-            
-            if(mensajeCuenta.equals(VALIDACION_OK)){
-                condicionCuenta = true;
-                cuentaValida = cuentaLimpia;
-            }else{
-                System.out.println(mensajeCuenta);
-            }
-        } while (!condicionCuenta);
-// ***********************************************************************************
-// ********************************* Menu aplicación *********************************
-    // Creamos el objeto CuentaBancaria con la informacion obtenida.
-        CuentaBancaria cuentaBancaria = new CuentaBancaria(TitularValido, cuentaValida);
-            
-    // Pintamos el menu de opciones.
-        pintarOpcionesMenu(isSiguienteOperacion());
+        // Pintamos el menu de opciones.
+        pintarOpcionesMenu(cuentaBancaria.isSiguienteOperacion());
                     
         do{
             // Capturamos la opción enviada por el usuario
@@ -185,6 +126,8 @@ public class CuentaBancaria {
 
     /**
      * Método que valida el numero de la cuenta que se recibe por parametro.
+     * Devolvera true si el numero de cuenta introducido es valido, para ello comprobara
+     * cada uno de los componentes de la cuenta, incluido las digitos de control.
      * @param cuentaProvisional
      * @return (String) Mensaje de la operación.
      */
@@ -366,7 +309,7 @@ public class CuentaBancaria {
      * @return (boolean) true si todos los caracteres de la cadena llegada son
      * numeros.
      */
-    private static boolean validaNumeros(String cadena) {
+    public static boolean validaNumeros(String cadena) {
         boolean resultado = true;
         int longitud = cadena.length();
 
@@ -388,7 +331,7 @@ public class CuentaBancaria {
      * @param cadena
      * @return (String) cadena sin espacios.
      */
-    private static String eliminarEspaciosGuiones(String cadena){
+    public static String eliminarEspaciosGuiones(String cadena){
         int longitud = cadena.length();
         StringBuilder constructorCadenas = new StringBuilder();
         for (int i = 0; i < longitud; i++) {
@@ -522,8 +465,18 @@ public class CuentaBancaria {
             
             switch(operacion){
                 case INGRESO: // Sumamos la cantidad llegada por parametro al saldo disponible.
-                    cuentaBancaria.setSaldoActual(saldoActualCuenta + cantidadNumerica);
-                    System.out.println("********* " + cantidadParametro + " ingresados correctamente. ***********");
+                    
+                    String mensaje;
+                    
+                    // Controlamos que la cantidad introducida no sea 0 ni un numero negativo.
+                    if(cantidadParametro.equals("0") || cantidadParametro.startsWith("-")){
+                        mensaje = "********* La cantidad introducida ha sido " + cantidadParametro + " no ha surgido ningun efecto ********";
+                    }else{
+                        mensaje = "********* " + cantidadParametro + " ingresados correctamente. ***********";
+                        cuentaBancaria.setSaldoActual(saldoActualCuenta + cantidadNumerica);
+                    }
+                    
+                    System.out.println(mensaje);
                     break;
                 case RETIRO: // Sumamos la cantidad llegada por parametro al saldo disponible.
                     // Comprobamos que el saldo sea mayor que la cantidad a retirar, y que el saldo
