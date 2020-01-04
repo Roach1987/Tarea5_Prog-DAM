@@ -18,7 +18,7 @@ public class AplicacionCuentaBancaria {
     public static void main (String[] args){
                // Declaramos las variables para obtenes los
         // datos del titular y numero de cuenta
-        String TitularValido = "";
+        String titularValido = "";
         String cuentaValida = "";
         
         // Objeto con el que pediremos y recibiremos la entrada de parametros por el usuario.
@@ -43,7 +43,7 @@ public class AplicacionCuentaBancaria {
             
             if(mensajeTitular.equals("OK")){
                 condicionTitular = true;
-                TitularValido = titularProvisional;
+                titularValido = titularProvisional;
             }else{
                 System.out.println(mensajeTitular);
             }
@@ -76,7 +76,7 @@ public class AplicacionCuentaBancaria {
 // ***********************************************************************************
 // ********************************* Menu aplicación *********************************
         // Creamos el objeto CuentaBancaria con la informacion obtenida.
-        CuentaBancaria cuentaBancaria = new CuentaBancaria(TitularValido, cuentaValida);
+        CuentaBancaria cuentaBancaria = new CuentaBancaria(titularValido, cuentaValida);
         
         // Realizamos la llamada al metodo que pedira los datos por consola.
         cuentaBancaria.comprobarCuenta(cuentaBancaria, escanerEntrada);
