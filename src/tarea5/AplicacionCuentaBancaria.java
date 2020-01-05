@@ -2,14 +2,11 @@ package tarea5;
 
 import java.util.Scanner;
 
-
 /**
  * 
  * @author Roach1987
  */
 public class AplicacionCuentaBancaria {
-    
-    
     /**
      * Método principal, encargado de arrancar la aplicación, 
      * pedira los datos de titular y cuenta bancaria al usuario.
@@ -73,12 +70,13 @@ public class AplicacionCuentaBancaria {
                 System.out.println(mensajeCuenta);
             }
         } while (!condicionCuenta);
+        
 // ***********************************************************************************
 // ********************************* Menu aplicación *********************************
         // Creamos el objeto CuentaBancaria con la informacion obtenida.
         CuentaBancaria cuentaBancaria = new CuentaBancaria(titularValido, cuentaValida);
         
         // Realizamos la llamada al metodo que pedira los datos por consola.
-        cuentaBancaria.comprobarCuenta(cuentaBancaria, escanerEntrada);
+        cuentaBancaria.operarCuentaBancaria(cuentaBancaria, escanerEntrada);
     }
 }

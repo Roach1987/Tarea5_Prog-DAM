@@ -28,15 +28,15 @@ public class CuentaBancaria {
     // Operación consulta en cuenta
     public static final String CONSULTA = "CONSULTA";
     // Operacion cuenta corriente numero cuenta completo
-    public static final String NUMERO_CUENTA_COMPLETO = "Completo";
+    public static final String NUMERO_CUENTA_COMPLETO = "COMPLETO";
     // Operacion cuenta corriente entidad
-    public static final String NUMERO_ENTIDAD = "Entidad";
+    public static final String NUMERO_ENTIDAD = "ENTIDAD";
     // Operacion cuenta corriente oficina
-    public static final String NUMERO_OFICINA = "Oficina";
+    public static final String NUMERO_OFICINA = "OFICINA";
     // Operacion cuenta corriente numero de cuenta (10 digitos final)
-    public static final String NUMERO_CUENTA = "Cuenta";
+    public static final String NUMERO_CUENTA = "CUENTA";
     // Operacion cuenta corriente digitos de control
-    public static final String DIGITOS_CONTROL = "Digitos";
+    public static final String DIGITOS_CONTROL = "DIGITOS";
     // Simbolo separador cuenta.
     public static final String SEPARADOR_CUENTA = "-";
 // ***********************************************************************************
@@ -74,7 +74,7 @@ public class CuentaBancaria {
      * @param cuentaBancaria
      * @param escanerEntrada
      */
-    public void comprobarCuenta(CuentaBancaria cuentaBancaria, Scanner escanerEntrada) {
+    public void operarCuentaBancaria(CuentaBancaria cuentaBancaria, Scanner escanerEntrada) {
             
         // Pintamos el menu de opciones.
         pintarOpcionesMenu(cuentaBancaria.isSiguienteOperacion());
@@ -173,7 +173,7 @@ public class CuentaBancaria {
                                 validaComponente = false;
                             }
                             break;
-                        case 1: // Sucursal
+                        case 1: // Sucursal u oficina
                             cadenaAuxiliar = cuentaProvisional.substring(4, 8);
                             if (!validaNumeros(cadenaAuxiliar)) {
                                 mensajeCuenta = "Los digitos de la sucursal deben de ser numericos.";
@@ -393,7 +393,7 @@ public class CuentaBancaria {
     private void menuImplementado(CuentaBancaria cuentaBancaria, String opcion, Scanner escanerEntrada){
         // Variable en la que se guardara la cantidad introducida por el usuario.
         String cantidadSaldoUsuario;
-        
+        // Variable en la que recogeremos la respuesta de las operaciones de la cuenta.
         String mensajeOperacionCuenta;
         System.out.println("******************************************************");
         switch(opcion){
@@ -544,11 +544,15 @@ public class CuentaBancaria {
      * DIGITOS: devulve los 2 digitos de control de la cuenta.
      * 
      * @param cuentaCorriente
-     * @param operacion 
+     * @param operacionParametro 
      * @return (String) resultado de la operación solicitada.
      */
-    public static String operacionesCuentaCorriente(String cuentaCorriente, String operacion){
+    public static String operacionesCuentaCorriente(String cuentaCorriente, String operacionParametro){
         String resultado = "";
+        
+        // Convertimos la opcion llegada por parametro a mayusculas.
+        String operacion = operacionParametro.toUpperCase();
+        
         // Entidad
         String entidad = cuentaCorriente.substring(0, 4);
         
@@ -560,25 +564,32 @@ public class CuentaBancaria {
         
         // Numero de cuenta
         String numeroCuenta = cuentaCorriente.substring(10, 20);
-                
-        switch(operacion){
-            case NUMERO_CUENTA_COMPLETO :
-                resultado = (entidad).concat(SEPARADOR_CUENTA).concat(oficina).concat(SEPARADOR_CUENTA)
-                    .concat(digitosControl).concat(SEPARADOR_CUENTA).concat(numeroCuenta);
-                break;
-            case NUMERO_ENTIDAD :
-                resultado = entidad;
-                break;
-            case NUMERO_OFICINA :
-                resultado = oficina;
-                break;
-            case NUMERO_CUENTA :
-                resultado = numeroCuenta;
-                break;
-            case DIGITOS_CONTROL :
-                resultado = digitosControl;
-                break;
-        }        
+        
+        if(operacion.equals(NUMERO_CUENTA_COMPLETO) || operacion.equals(NUMERO_ENTIDAD) || 
+                operacion.equals(NUMERO_OFICINA) || operacion.equals(NUMERO_CUENTA) ||
+                operacion.equals(DIGITOS_CONTROL)){
+            switch(operacion){
+                case NUMERO_CUENTA_COMPLETO :
+                    resultado = (entidad).concat(SEPARADOR_CUENTA).concat(oficina).concat(SEPARADOR_CUENTA)
+                        .concat(digitosControl).concat(SEPARADOR_CUENTA).concat(numeroCuenta);
+                    break;
+                case NUMERO_ENTIDAD :
+                    resultado = entidad;
+                    break;
+                case NUMERO_OFICINA :
+                    resultado = oficina;
+                    break;
+                case NUMERO_CUENTA :
+                    resultado = numeroCuenta;
+                    break;
+                case DIGITOS_CONTROL :
+                    resultado = digitosControl;
+                    break;
+            }
+        }else{
+            resultado = "******** La operación enviada no es valida, las opciones validas son: " + "\n" +
+                    "COMPLETO, ENTIDAD, OFICINA, CUENTA y DIGITOS. Vuelva a intentarlo";
+        }
         return resultado;
     }
 // ***********************************************************************************
